@@ -15,7 +15,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     _name = TextEditingController();
     _lastName = TextEditingController();
-    fetchFormData();
+    fetchFormData().whenComplete(() => null);
     super.initState();
   }
 
