@@ -10,6 +10,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   TextEditingController _name;
   TextEditingController _lastName;
+  int ddlValue;
 
   @override
   void initState() {
@@ -21,7 +22,6 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = false;
     return Scaffold(
       appBar: AppBar(
         title: Text("Form"),
@@ -48,9 +48,55 @@ class _UserProfileState extends State<UserProfile> {
               SizedBox(
                 height: 15,
               ),
-              ElevatedButton(onPressed: () async{
-                await saveFormData();
-              }, child: Text("Save"))
+              DropdownButtonFormField<int>(
+                  value: ddlValue,
+                  onChanged: (value) {
+                    setState(() {
+                      ddlValue = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Age Group",
+                      hintText: "Please choose one"),
+                  items: [
+                    DropdownMenuItem<int>(
+                      child: Text("12-16"),
+                      value: 1,
+                    ),
+                    DropdownMenuItem<int>(
+                      child: Text("17-55"),
+                      value: 2,
+                    ),
+                    DropdownMenuItem<int>(
+                      child: Text("56+"),
+                      value: 3,
+                    )
+                  ]),
+              SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                height: 45,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      await saveFormData();
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Roboto"
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )
+                        //Other properties
+                        )),
+              ),
             ],
           ),
         ),
@@ -63,6 +109,7 @@ class _UserProfileState extends State<UserProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("name", _name.text);
     await prefs.setString("last_name", _lastName.text);
+    await prefs.setInt("age_group", ddlValue);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("Saved")));
   }
@@ -72,5 +119,6 @@ class _UserProfileState extends State<UserProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _name.text = prefs.getString("name");
     _lastName.text = prefs.getString("last_name");
+    ddlValue = prefs.getInt("age_group");
   }
 }
