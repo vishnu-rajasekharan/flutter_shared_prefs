@@ -10,7 +10,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   TextEditingController _name;
   TextEditingController _lastName;
-  int ddlValue;
+  int _ageGroupDDLValue;
 
   @override
   void initState() {
@@ -49,10 +49,10 @@ class _UserProfileState extends State<UserProfile> {
                 height: 15,
               ),
               DropdownButtonFormField<int>(
-                  value: ddlValue,
+                  value: _ageGroupDDLValue,
                   onChanged: (value) {
                     setState(() {
-                      ddlValue = value;
+                      _ageGroupDDLValue = value;
                     });
                   },
                   decoration: InputDecoration(
@@ -109,7 +109,7 @@ class _UserProfileState extends State<UserProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("name", _name.text);
     await prefs.setString("last_name", _lastName.text);
-    await prefs.setInt("age_group", ddlValue);
+    await prefs.setInt("age_group", _ageGroupDDLValue);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("Saved")));
   }
@@ -119,6 +119,6 @@ class _UserProfileState extends State<UserProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _name.text = prefs.getString("name");
     _lastName.text = prefs.getString("last_name");
-    ddlValue = prefs.getInt("age_group");
+    _ageGroupDDLValue = prefs.getInt("age_group");
   }
 }
